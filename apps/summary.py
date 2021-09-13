@@ -36,6 +36,7 @@ def indicator(color, text, id_value):
         className="two columns indicator",
     )
 
+
 def bin_dropdown(df, column):
     options = [{"label": bin, "value": bin} for bin in df[column].unique()]
     return options

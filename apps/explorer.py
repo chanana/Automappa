@@ -40,12 +40,13 @@ layout = [
             ),
             html.Div(
                 [
-                    html.Button("Download Refinements",
+                    html.Button(
+                        "Download Refinements",
                         id="download-button",
                         n_clicks=0,
                         className="button button--primary",
                     ),
-                    Download(id='download-refinement'),
+                    Download(id="download-refinement"),
                     html.Label("Color By:"),
                     dcc.Dropdown(
                         id="cluster_col",
@@ -114,7 +115,9 @@ layout = [
                     ),
                     html.P("NOTE"),
                     html.Br(),
-                    html.P("Toggling save with contigs selected will save them as a refinement group."),
+                    html.P(
+                        "Toggling save with contigs selected will save them as a refinement group."
+                    ),
                 ],
                 className="two columns",
             ),
@@ -358,7 +361,15 @@ def update_zaxis(zaxis_column, cluster_col, selectedData, df):
         Input("hide-selections-toggle", "value"),
     ],
 )
-def update_axes(xaxis_column, yaxis_column, show_legend, cluster_col, binning, refinement, hide_selection_toggle):
+def update_axes(
+    xaxis_column,
+    yaxis_column,
+    show_legend,
+    cluster_col,
+    binning,
+    refinement,
+    hide_selection_toggle,
+):
     df = pd.read_json(binning, orient="split")
     titles = {
         "bh_tsne_x": "bh-tsne-x",
@@ -410,7 +421,10 @@ def update_axes(xaxis_column, yaxis_column, show_legend, cluster_col, binning, r
 
 @app.callback(
     Output("datatable", "data"),
-    [Input("scatter2d_graphic", "selectedData"), Input("intermediate-selections", "children")],
+    [
+        Input("scatter2d_graphic", "selectedData"),
+        Input("intermediate-selections", "children"),
+    ],
 )
 def update_table(selectedData, df):
     df = pd.read_json(df, orient="split")
@@ -427,31 +441,28 @@ def update_table(selectedData, df):
 def bin_table_callback(df):
     df = pd.read_json(df, orient="split")
     return dash_table.DataTable(
-            id="datatable",
-            data=df.to_dict("records"),
-            columns=[{"name": col, "id": col} for col in df.columns],
-            style_cell={'textAlign': 'center'},
-            style_cell_conditional=[
-                {
-                    'if': {'column_id': 'contig'},
-                    'textAlign': 'right'
-                }
-            ],
-            virtualization=True)
+        id="datatable",
+        data=df.to_dict("records"),
+        columns=[{"name": col, "id": col} for col in df.columns],
+        style_cell={"textAlign": "center"},
+        style_cell_conditional=[{"if": {"column_id": "contig"}, "textAlign": "right"}],
+        virtualization=True,
+    )
 
 
 @app.callback(
     Output("download-refinement", "data"),
     [
         Input("download-button", "n_clicks"),
-        Input("intermediate-selections", "children")
-    ]
+        Input("intermediate-selections", "children"),
+    ],
 )
 def download_refinements(n_clicks, intermediate_selections):
     if not n_clicks:
         raise PreventUpdate
     df = pd.read_json(intermediate_selections, orient="split")
     return send_data_frame(df.to_csv, "refinements.csv", index=False)
+
 
 @app.callback(
     Output("intermediate-selections", "children"),
@@ -462,7 +473,9 @@ def download_refinements(n_clicks, intermediate_selections):
     ],
     [State("intermediate-selections", "children")],
 )
-def store_binning_refinement_selections(selected_data, refinement_data, save_toggle, intermediate_selections):
+def store_binning_refinement_selections(
+    selected_data, refinement_data, save_toggle, intermediate_selections
+):
     if not selected_data and not intermediate_selections:
         # We first load in our binning information for refinement
         # Note: this callback should trigger on initial load
