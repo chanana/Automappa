@@ -266,7 +266,7 @@ tab2 = dbc.Tab(
 tab3 = dbc.Tab(label="MAG Summary", tab_id="tab-3-mag-summary", children=[])
 
 app.layout = dbc.Container(dbc.Tabs([tab1, tab2, tab3]), fluid=True)
-
+# TODO: implement the tab reload functionality.
 
 def indicator(color, text, id_value):
     return html.Div(
